@@ -17,8 +17,8 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}
-            mkdir -p ./api
+            cd ${{ secrets.DEV_REMOTE_TARGET_WEB }}
+            ls
           host: ${{ secrets.DEV_REMOTE_HOST }}
           user: ${{ secrets.DEV_REMOTE_USER }}
           key: ${{ secrets.DEV_SERVER_SSH_KEY }}
