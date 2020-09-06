@@ -1,0 +1,77 @@
+name: Continuous Deployment
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
+    branches:
+        - master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: SSH Create API dir
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}
+            mkdir -p ./api
+          host: ${{ secrets.DEV_REMOTE_HOST }}
+          user: ${{ secrets.DEV_REMOTE_USER }}
+          key: ${{ secrets.DEV_SERVER_SSH_KEY }}
+      - name: SSH Deploy App
+        uses: easingthemes/ssh-deploy@v2.1.1
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
+            ARGS: "-rltgoDzvO --delete"
+            SOURCE: "./"
+            REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
+            REMOTE_USER: ${{ secrets.DEV_REMOTE_USER }}
+            TARGET: ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api
+      - name: SSH Install Dep
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
+            cd ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
+            php artisan down
+            cp -r cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api/* ./
+            composer install 
+            php artisan migrate
+            php artisan cache:clear
+            php artisan queue:restart
+            php artisan up
+          host: ${{ secrets.DEV_REMOTE_HOST }}
+          user: ${{ secrets.DEV_REMOTE_USER }}
+          key: ${{ secrets.DEV_SERVER_SSH_KEY }}    
+  # test:
+  #   name: Test
+  #   runs-on: ubuntu-latest
+  #     steps:
+  #         - uses: actions/checkout@v2
+  #         - name: Laravel Setup
+  #           run: |
+  #             cp .env.ci .env
+  #             composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+  #             php artisan key:generate
+  #             chmod -R 777 storage bootstrap/cache
+  #         - name: Execute tests (Unit and Feature tests) via PHPUnit
+  #           env:
+  #             DB_CONNECTION: mysql
+  #             DB_DATABASE: db_test
+  #             DB_PORT: 33306
+  #             DB_USER: root
+  #             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  #           run: |
+  #             php artisan migrate
+  #             vendor/phpunit/phpunit/phpunit
+  # deploy:
+  #   needs: test
+  #   name: Deploy
+  #   runs-on: ubuntu-latest
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #       - name: Laravel Deploy
