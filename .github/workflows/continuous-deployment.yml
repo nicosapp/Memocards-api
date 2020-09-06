@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: SSH Create API dir
+      - name: SSH Create web API folder
         uses: fifsky/ssh-action@master
         with:
           command: |
@@ -22,7 +22,7 @@ jobs:
           host: ${{ secrets.DEV_REMOTE_HOST }}
           user: ${{ secrets.DEV_REMOTE_USER }}
           key: ${{ secrets.DEV_SERVER_SSH_KEY }}
-      - name: SSH Deploy App
+      - name: SSH transfer API in server folder
         uses: easingthemes/ssh-deploy@v2.1.1
         env:
             SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
@@ -31,7 +31,7 @@ jobs:
             REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
             REMOTE_USER: ${{ secrets.DEV_REMOTE_USER }}
             TARGET: ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api
-      - name: SSH Install Dep
+      - name: SSH Copy API to web folder & Install dependencies
         uses: fifsky/ssh-action@master
         with:
           command: |
