@@ -17,36 +17,36 @@ jobs:
         uses: fifsky/ssh-action@master
         with:
           command: |
-            cd ${{ secrets.DEV_REMOTE_TARGET_WEB }}
-            ls
+            cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}
+            mkdir -p ./api
           host: ${{ secrets.DEV_REMOTE_HOST }}
           user: ${{ secrets.DEV_REMOTE_USER }}
           key: ${{ secrets.DEV_SERVER_SSH_KEY }}
-      # - name: SSH transfer API in server folder
-      #   uses: easingthemes/ssh-deploy@v2.1.1
-      #   env:
-      #       SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
-      #       ARGS: "-rltgoDzvO --delete"
-      #       SOURCE: "./"
-      #       REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
-      #       REMOTE_USER: ${{ secrets.DEV_REMOTE_USER }}
-      #       TARGET: ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api
-      # - name: SSH Copy API to web folder & Install dependencies
-      #   uses: fifsky/ssh-action@master
-      #   with:
-      #     command: |
-      #       mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
-      #       cd ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
-      #       php artisan down
-      #       cp -r cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api/* ./
-      #       composer install 
-      #       php artisan migrate
-      #       php artisan cache:clear
-      #       php artisan queue:restart
-      #       php artisan up
-      #     host: ${{ secrets.DEV_REMOTE_HOST }}
-      #     user: ${{ secrets.DEV_REMOTE_USER }}
-      #     key: ${{ secrets.DEV_SERVER_SSH_KEY }}    
+      - name: SSH transfer API in server folder
+        uses: easingthemes/ssh-deploy@v2.1.1
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SSH_KEY }}
+            ARGS: "-rltgoDzvO --delete"
+            SOURCE: "./"
+            REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
+            REMOTE_USER: ${{ secrets.DEV_REMOTE_USER }}
+            TARGET: ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api
+      - name: SSH Copy API to web folder & Install dependencies
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
+            cd ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
+            php artisan down
+            cp -r cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api/* ./
+            composer install 
+            php artisan migrate
+            php artisan cache:clear
+            php artisan queue:restart
+            php artisan up
+          host: ${{ secrets.DEV_REMOTE_HOST }}
+          user: ${{ secrets.DEV_REMOTE_USER }}
+          key: ${{ secrets.DEV_SERVER_SSH_KEY }}    
   # test:
   #   name: Test
   #   runs-on: ubuntu-latest
