@@ -31,11 +31,12 @@ jobs:
             REMOTE_HOST: ${{ secrets.DEV_REMOTE_HOST }}
             REMOTE_USER: ${{ secrets.DEV_REMOTE_USER }}
             TARGET: ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api
-      - name: SSH Copy API to web folder & Install dependencies
+      - name: SSH Copy API to web folder & create Uploads folder & Install dependencies
         uses: fifsky/ssh-action@master
         with:
           command: |
             mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
+            mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/uploads/
             cd ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
             php artisan down
             cp -r cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api/* ./
