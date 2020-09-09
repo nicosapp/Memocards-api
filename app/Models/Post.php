@@ -1,7 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use App\Models\Tag;
+use App\Scoping\Scoper;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,8 +51,23 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function categories()
+    { 
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
     public function scopePublic(Builder $builder)
     {
         return $builder->where('is_public',true);
+    }
+
+    public function scopeWithScopes(Builder $builder, $scopes = [])
+    {
+        return (new Scoper(request()))->apply($builder, $scopes);
     }
 }
