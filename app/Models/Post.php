@@ -34,11 +34,10 @@ class Post extends Model
             $post->uuid = Str::uuid();
         });
         
-        // static::created(function(Post $post) {
-        //     $post->steps()->create([
-        //         'order' => 1
-        //     ]);
-        // });
+        static::updating(function(Post $post) {
+            $post->post_excerpt = Str::words(strip_tags($post->post_content),60);
+
+        });
     }
 
     // public function steps()
@@ -69,5 +68,10 @@ class Post extends Model
     public function scopeWithScopes(Builder $builder, $scopes = [])
     {
         return (new Scoper(request()))->apply($builder, $scopes);
+    }
+
+    public function scopeOrdered(Builder $builder, $direction = 'desc')
+    {
+        $builder->orderBy('updated_at', $direction);
     }
 }

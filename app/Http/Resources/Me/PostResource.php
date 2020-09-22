@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\Me;
 
-use App\Http\Resources\PostResourceDefault;
-use App\Http\Resources\CategoryResourceDefault;
-use App\Http\Resources\TagResourceDefault;
+use App\Http\Resources\PostResourceBase;
+use App\Http\Resources\CategoryResourceBase;
+use App\Http\Resources\TagResourceBase;
 
-class PostResource extends PostResourceDefault
+class PostResource extends PostResourceBase
 {
     /**
      * Transform the resource into an array.
@@ -18,8 +18,8 @@ class PostResource extends PostResourceDefault
     {
         return array_merge(parent::toArray($request), [
             'owner' => $this->user_id === auth()->user()->id,
-            'categories' => CategoryResourceDefault::collection($this->categories),
-            'tags' => TagResourceDefault::collection($this->tags),
+            'categories' => CategoryResourceBase::collection($this->categories),
+            'tags' => TagResourceBase::collection($this->tags),
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SignInController extends Controller
 {
@@ -14,7 +15,7 @@ class SignInController extends Controller
             'password' => 'required'
         ]);
 
-        if(!$token = auth()->attempt($request->only('email', 'password'))){
+        if(!$token = Auth::attempt($request->only('email', 'password'))){
             return response()->json([
                 'errors' =>[
                     'email' =>[
@@ -22,10 +23,16 @@ class SignInController extends Controller
                     ]
                 ]
                     ], 422);
-        }
+        } 
+        // else if(Auth::user()->email_verified_at === NULL){
+        //     return response()->json([
+        //         'error'=>'Please Verify Email'
+        //     ], 401);
+        // } 
 
         return response()->json([
             'data' => compact('token')
         ]);
+       
     }
 }

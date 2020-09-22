@@ -12,28 +12,27 @@ class Category extends Model
         'name',
         'order',
         'parent_id',
-        'user_id'
     ];
 
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
+    // public function getRouteKeyName()
+    // {
+    //     return 'slug';
+    // }
 
     public static function boot()
     {
         parent::boot();
 
-        static::creating(function(Category $category){
-            // produce a slug based on the activity title
-            $slug = Str::slug($category->name);
+        // static::creating(function(Category $category){
+        //     // produce a slug based on the activity title
+        //     $slug = Str::slug($category->name);
 
-            // check to see if any other slugs exist that are the same & count them
-            $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+        //     // check to see if any other slugs exist that are the same & count them
+        //     $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
 
-            // if other slugs exist that are the same, append the count to the slug
-            $category->slug = $count ? "{$slug}-{$count}" : $slug;
-        });
+        //     // if other slugs exist that are the same, append the count to the slug
+        //     $category->slug = $count ? "{$slug}-{$count}" : $slug;
+        // });
     }
 
     public function children()

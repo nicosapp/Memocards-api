@@ -12,7 +12,7 @@ class CategoryScope
         if(is_array($values = explode(',',$value))){
             foreach($values as $v){
                 $builder->whereHas('categories', function($builder) use ($v){
-                    $builder->where('slug', $v);
+                    $builder->where('categories.id', $v);
                 });
             }
         }

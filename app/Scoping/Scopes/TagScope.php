@@ -11,7 +11,7 @@ class TagScope
         if(is_array($values = explode(',',$value))){
             foreach($values as $v){
                 $builder->whereHas('tags', function($builder) use ($v){
-                    $builder->where('slug', $v);
+                    $builder->where('tags.id', $v);
                 });
             }
         }
