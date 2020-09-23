@@ -16,7 +16,7 @@ class AddUserIdCategories extends Migration
         Schema::table('categories', function (Blueprint $table) {
             $table->bigInteger('user_id');
 
-            $table->foreign('user_id')->references('users')->on('id');
+            $table->foreign('user_id')->references('users')->on('id')->onDelete('cascade');
         });
     }
 
