@@ -39,6 +39,7 @@ jobs:
             mkdir -p ${{ secrets.DEV_REMOTE_TARGET_WWW }}/uploads/
             cd ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/
             php artisan down
+            rm -r ${{ secrets.DEV_REMOTE_TARGET_WWW }}/api/database/migrations/*
             cp -r cd ${{ secrets.DEV_REMOTE_TARGET_HOME }}/api/* ./
             composer install 
             php artisan migrate
