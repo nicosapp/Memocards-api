@@ -14,7 +14,7 @@ class AddUserIdTagTable extends Migration
     public function up()
     {
         Schema::table('tags', function (Blueprint $table) {
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
 
             $table->foreign('user_id')->references('users')->on('id')->onDelete('cascade');
         });

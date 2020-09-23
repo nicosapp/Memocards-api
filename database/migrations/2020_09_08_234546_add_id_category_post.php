@@ -14,7 +14,7 @@ class AddIdCategoryPost extends Migration
     public function up()
     {
         Schema::table('category_post', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
         });
     }
 

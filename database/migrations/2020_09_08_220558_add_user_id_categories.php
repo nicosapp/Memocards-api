@@ -14,7 +14,7 @@ class AddUserIdCategories extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
 
             $table->foreign('user_id')->references('users')->on('id');
         });

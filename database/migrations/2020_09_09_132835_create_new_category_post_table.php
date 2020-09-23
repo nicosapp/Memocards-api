@@ -15,9 +15,9 @@ class CreateNewCategoryPostTable extends Migration
     {
         Schema::dropIfExists('category_post');
         Schema::create('category_post', function (Blueprint $table) {
-            $table->id();
-            $table->integer('category_id')->unsigned()->index();
-            $table->integer('post_id')->unsigned()->index();
+            $table->bigIncrements('id');
+            $table->bigInteger('category_id')->unsigned()->index();
+            $table->bigInteger('post_id')->unsigned()->index();
             $table->timestamps();
 
             $table->foreign('category_id')->references('categories')->on('id')->onDelete('cascade');
