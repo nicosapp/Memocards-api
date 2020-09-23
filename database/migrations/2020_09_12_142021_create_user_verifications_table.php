@@ -20,7 +20,7 @@ class CreateUserVerificationsTable extends Migration
             $table->integer('tentative');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('users')->on('id')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

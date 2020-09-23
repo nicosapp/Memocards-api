@@ -20,8 +20,8 @@ class CreateNewCategoryPostTable extends Migration
             $table->bigInteger('post_id')->unsigned()->index();
             $table->timestamps();
 
-            $table->foreign('category_id')->references('categories')->on('id')->onDelete('cascade');
-            $table->foreign('post_id')->references('posts')->on('id')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
 

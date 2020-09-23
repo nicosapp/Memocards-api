@@ -19,7 +19,7 @@ class CreateUserInfosTable extends Migration
             $table->string('locale',10);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('users')->on('id')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
