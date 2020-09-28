@@ -13,16 +13,17 @@ class SignUpController extends Controller
     {
         $this->validate($request,[
             'email' => 'required|email|unique:users,email',
-            'username' => 'required',
-            'firstname' => 'required',
-            'name' => 'required',
+            'username' => 'required|max:191',
+            'firstname' => 'nullable|max:191',
+            'name' => 'required|max:191',
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required'
         ]);
 
         $user = User::create(
             $request->only('email', 'username', 'firstname', 'name', 'password')
-        )->sendApiEmailVerificationNotification();
+        );
+        $user->sendApiEmailVerificationNotification();
         // instead of sendEmailVerificationNotification
 
         return new UserResource($user);

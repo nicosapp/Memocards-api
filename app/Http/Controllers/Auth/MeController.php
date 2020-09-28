@@ -27,7 +27,8 @@ class MeController extends Controller
             'username' => 'required',
             'firstname' => 'required',
             'name' => 'required',
-            'password' => 'nullable|min:6'
+            'password' => 'nullable|min:6',
+            // 'password_confirmation' => 'nullable'
         ]);
 
         $request->user()->update(

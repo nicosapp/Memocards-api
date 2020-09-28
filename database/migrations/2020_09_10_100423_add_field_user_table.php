@@ -18,8 +18,8 @@ class AddFieldUserTable extends Migration
                 $table->string('firstname',100);
             if(!Schema::hasColumn('users', 'slug'))
                 $table->string('slug',100)->unique();
-            if(!Schema::hasColumn('users', 'firstname'))
-                $table->string('slug',100);
+            if(!Schema::hasColumn('users', 'username'))
+                $table->string('username',100);
         });
     }
 

@@ -17,9 +17,9 @@ class CreateTagTable extends Migration
             $table->id();
             $table->string('name');
             $table->timestamps();
-            $table->bigInteger('user_id');
+            $table->bigInteger('user_id')->unsigned()->index();
 
-            $table->foreign('user_id')->references('users')->on('id')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
