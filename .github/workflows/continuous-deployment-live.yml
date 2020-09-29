@@ -38,15 +38,15 @@ jobs:
           command: |
             mkdir -p ${{ secrets.REMOTE_TARGET_WWW }}/api/
             cd ${{ secrets.REMOTE_TARGET_WWW }}/api/
-            php artisan down
+            php7.4 artisan down
             rm -r ${{ secrets.REMOTE_TARGET_WWW }}/api/database/migrations/*
             cp ${{ secrets.REMOTE_TARGET_HOME }}/.env.api ${{ secrets.REMOTE_TARGET_HOME }}/api/.env
             cp -r ${{ secrets.REMOTE_TARGET_HOME }}/api/* ./
-            composer install 
-            php artisan migrate
-            php artisan cache:clear
-            php artisan queue:restart
-            php artisan up
+            php7.4 /usr/local/bin/composer install 
+            php7.4 artisan migrate
+            php7.4 artisan cache:clear
+            php7.4 artisan queue:restart
+            php7.4 artisan up
           host: ${{ secrets.REMOTE_HOST }}
           user: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}

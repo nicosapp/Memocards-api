@@ -6,34 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 class AddFieldUserTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::table('users', function (Blueprint $table) {
-            if(!Schema::hasColumn('users', 'firstname'))
-                $table->string('firstname',100);
-            if(!Schema::hasColumn('users', 'slug'))
-                $table->string('slug',100)->unique();
-            if(!Schema::hasColumn('users', 'username'))
-                $table->string('username',100);
-        });
-    }
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      if (!Schema::hasColumn('users', 'firstname'))
+        $table->string('firstname', 100)->nullable();
+      if (!Schema::hasColumn('users', 'slug'))
+        $table->string('slug', 100)->nullabel()->unique();
+      if (!Schema::hasColumn('users', 'username'))
+        $table->string('username', 100);
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('firstname');
-            $table->dropColumn('slug');
-            $table->dropColumn('username');
-        });
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('firstname');
+      $table->dropColumn('slug');
+      $table->dropColumn('username');
+    });
+  }
 }
