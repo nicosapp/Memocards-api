@@ -22,7 +22,7 @@ class UserResource extends JsonResource
       'verified' => $this->hasVerifiedEmail(),
       'slug' => $this->slug,
       'avatar' => $this->when(
-        $this->avatar()->exists(),
+        $this->avatar(),
         new MediaResourceBase($this->avatar())
       ),
       $this->mergeWhen(
