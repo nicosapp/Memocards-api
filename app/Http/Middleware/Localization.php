@@ -17,7 +17,7 @@ class Localization
   public function handle($request, Closure $next)
   {
     if ($request->user()) {
-      App::setlocale($request->user()->locale);
+      App::setlocale($request->user()->infos->locale);
     }
     return $next($request);
   }

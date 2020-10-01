@@ -9,23 +9,25 @@ use App\Http\Resources\UserResource;
 
 class SignUpController extends Controller
 {
-    public function __invoke(Request $request)
-    {
-        $this->validate($request,[
-            'email' => 'required|email|unique:users,email',
-            'username' => 'required|max:191',
-            'firstname' => 'nullable|max:191',
-            'name' => 'required|max:191',
-            'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required'
-        ]);
+  public function __invoke(Request $request)
+  {
+    $this->validate($request, [
+      'email' => 'required|email|unique:users,email',
+      'username' => 'required|max:191',
+      'firstname' => 'nullable|max:191',
+      'name' => 'required|max:191',
+      'password' => 'required|min:6|confirmed',
+      'password_confirmation' => 'required'
+    ]);
 
-        $user = User::create(
-            $request->only('email', 'username', 'firstname', 'name', 'password')
-        );
-        $user->sendApiEmailVerificationNotification();
-        // instead of sendEmailVerificationNotification
+    $user = User::create(
+      $request->only('email', 'username', 'firstname', 'name', 'password')
+    );
+    $user->infos()->create();
 
-        return new UserResource($user);
-    }
+    $user->sendApiEmailVerificationNotification();
+    // instead of sendEmailVerificationNotification
+
+    return new UserResource($user);
+  }
 }

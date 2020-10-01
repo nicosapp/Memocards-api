@@ -20,179 +20,178 @@ use App\Notifications\Mail\ApiResetPasswordNotification;
 
 class User extends Authenticatable implements JWTSubject, HasMedia, MustVerifyEmail
 {
-    use Notifiable, InteractsWithMedia, CanResetPassword;
+  use Notifiable, InteractsWithMedia, CanResetPassword;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 
-        'email', 
-        'password', 
-        'firstname', 
-        'username', 
-        'slug'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'slug'
+  ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'password', 'remember_token',
+  ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'email_verified_at' => 'datetime',
+  ];
 
-    public static function boot()
-    {
-        parent::boot();
+  public static function boot()
+  {
+    parent::boot();
 
-        static::creating(function(User $user){
-            $user = self::createUserSlug($user);
-        });
+    static::creating(function (User $user) {
+      $user = self::createUserSlug($user);
+    });
 
-        static::updating(function(User $user){
-            $user = self::createUserSlug($user);
-        });
+    static::updating(function (User $user) {
+      $user = self::createUserSlug($user);
+    });
+  }
+
+  /**
+   * Undocumented function
+   *
+   * @param User $user
+   * @return void
+   */
+  public static function createUserSlug(User $user)
+  {
+    // produce a slug based on the activity title
+    $slug = Str::slug($user->name);
+
+    // check to see if any other slugs exist that are the same & count them
+    $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+
+    // if other slugs exist that are the same, append the count to the slug
+    $user->slug = $count ? "{$slug}-{$count}" : $slug;
+
+    return $user;
+  }
+  /**
+   * Undocumented function
+   *
+   * @param [type] $password
+   * @return void
+   */
+  public function setPasswordAttribute($password)
+  {
+    if (trim($password) === '') {
+      return;
     }
+    $this->attributes['password'] = Hash::make($password);
+  }
 
-    /**
-     * Undocumented function
-     *
-     * @param User $user
-     * @return void
-     */
-    public static function createUserSlug(User $user){
-        // produce a slug based on the activity title
-        $slug = Str::slug($user->username);
+  /**
+   * Undocumented function
+   *
+   * @param [type] $token
+   * @return void
+   * 
+   * same as sendPasswordResetNotification
+   */
+  public function sendPasswordResetNotification($token)
+  {
+    $this->sendApiPasswordResetNotification($token);
+  }
+  public function sendApiPasswordResetNotification($token)
+  {
+    $this->notify(new ApiResetPasswordNotification($token));
+  }
 
-        // check to see if any other slugs exist that are the same & count them
-        $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
+  /**
+   * Undocumented function
+   *
+   * @return void
+   * 
+   * same as sendEmailVerificationNotification
+   */
+  public function sendApiEmailVerificationNotification()
+  {
+    $this->notify(new ApiVerifyEmailNotification); // my notification
+  }
 
-        // if other slugs exist that are the same, append the count to the slug
-        $user->slug = $count ? "{$slug}-{$count}" : $slug;
+  /**
+   * Get the identifier that will be stored in the subject claim of the JWT.
+   *
+   * @return mixed
+   */
+  public function getJWTIdentifier()
+  {
+    return $this->getKey();
+  }
 
-        return $user;
-    }
-    /**
-     * Undocumented function
-     *
-     * @param [type] $password
-     * @return void
-     */
-    public function setPasswordAttribute($password)
-    {
-        if(trim($password) === ''){
-            return;
-        }
-        $this->attributes['password'] = Hash::make($password);
-    }
+  /**
+   * Return a key value array, containing any custom claims to be added to the JWT.
+   *
+   * @return array
+   */
+  public function getJWTCustomClaims()
+  {
+    return [];
+  }
 
-    /**
-     * Undocumented function
-     *
-     * @param [type] $token
-     * @return void
-     * 
-     * same as sendPasswordResetNotification
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->sendApiPasswordResetNotification($token);
-    }
-    public function sendApiPasswordResetNotification($token)
-    {
-        $this->notify(new ApiResetPasswordNotification($token));
-    }
+  public function posts()
+  {
+    return $this->hasMany(Post::class);
+  }
 
-    /**
-     * Undocumented function
-     *
-     * @return void
-     * 
-     * same as sendEmailVerificationNotification
-     */
-    public function sendApiEmailVerificationNotification()
-    {
-        $this->notify(new ApiVerifyEmailNotification); // my notification
-    }
+  public function categories()
+  {
+    return $this->hasMany(Category::class);
+  }
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
+  public function tags()
+  {
+    return $this->hasMany(Tag::class);
+  }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
+  public function avatar()
+  {
+    return $this->getMedia('avatars')->first();
+  }
 
-    public function posts()
-    {
-        return $this->hasMany(Post::class)
-            ->latest();
-    }
+  public function infos()
+  {
+    return $this->hasOne(UserInfo::class);
+  }
 
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
-    }
+  public function verification()
+  {
+    return $this->hasOne(UserVerification::class);
+  }
 
-    public function tags()
-    {
-        return $this->hasMany(Tag::class);
-    }
-
-    public function avatar()
-    {
-        return $this->getMedia('avatars')->first();
-    }
-
-    public function medias()
-    {
-        return $this->morphMany(Media::class, 'model')->get();
-    }
-
-    public function verification(){
-        return $this->hasOne(UserVerification::class);
-    }
-
-    //Media Library
-    public function registerMediaCollections() : void
-    {
-        $this
-            ->addMediaCollection('avatars')
-            ->acceptsFile(function (File $file) {
-                return $file->size < 1024 * 1024 * 2;
-            })
-            ->singleFile();
-    } 
-    public function registerMediaConversions(Media $media = null) : void
-    {
-        $this->addMediaConversion('thumb')
-            ->width(50)
-            ->height(50)
-            ->nonQueued();
-    }
+  //Media Library
+  public function registerMediaCollections(): void
+  {
+    $this
+      ->addMediaCollection('avatars')
+      ->acceptsFile(function (File $file) {
+        return $file->size < 1024 * 1024 * 2;
+      })
+      ->singleFile();
+  }
+  public function registerMediaConversions(Media $media = null): void
+  {
+    $this->addMediaConversion('thumb')
+      ->width(50)
+      ->height(50)
+      ->nonQueued();
+  }
 }

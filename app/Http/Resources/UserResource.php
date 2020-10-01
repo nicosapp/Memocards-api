@@ -7,24 +7,33 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function toArray($request)
-    {
-        return [
-            'id' => $this->id,
-            'email' => $this->email,
-            'name' => $this->name,
-            'firstname' => $this->firstname,
-            'verified' => $this->email_verified_at !== null,
-            'username' => $this->username,
-            'slug' => $this->slug,
-            'avatar' => new MediaResourceBase($this->avatar()),
-            // 'media' => MediaResourceBase::collection($this->medias())
-        ];
-    }
+  /**
+   * Transform the resource into an array.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return array
+   */
+  public function toArray($request)
+  {
+    return [
+      'id' => $this->id,
+      'email' => $this->email,
+      'name' => $this->name,
+      'verified' => $this->hasVerifiedEmail(),
+      'slug' => $this->slug,
+      'avatar' => $this->when(
+        $this->avatar()->exists(),
+        new MediaResourceBase($this->avatar())
+      ),
+      $this->mergeWhen(
+        $this->infos()->exists(),
+        [
+          'firstname' => $this->infos->firstname,
+          'lastname' => $this->infos->lastname,
+          'locale' => $this->infos->locale
+        ]
+      )
+      // 'media' => MediaResourceBase::collection($this->medias()->get())
+    ];
+  }
 }

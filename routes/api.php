@@ -45,10 +45,22 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'me', 'namespace' => 'Me']
   Route::patch('posts/{post}', 'PostController@update');
   Route::delete('posts/{post}', 'PostController@destroy');
 
+  Route::post('medias', 'MediaController@store');
+  Route::get('medias/{media}', 'MediaController@show');
+  Route::get('medias', 'MediaController@index');
+  Route::patch('medias/{media}', 'MediaController@update');
+  Route::delete('medias/{media}', 'MediaController@destroy');
+
+
+  Route::get('dashboard/lastCreated', 'PostDashboardController@lastCreated');
+  Route::get('dashboard/favorites', 'PostDashboardController@favorites');
+  Route::get('dashboard/mostViewed', 'PostDashboardController@mostViewed');
+
   Route::get('categories', 'CategoryController@index');
   Route::post('categories', 'CategoryController@store');
   Route::get('categories/{category}', 'CategoryController@show');
   Route::patch('categories/{category}', 'CategoryController@update');
+  Route::patch('categoriesBulk', 'CategoryController@updateBulk');
   Route::delete('categories/{category}', 'CategoryController@destroy');
   Route::post('categories/{category}/link/{post}', 'CategoryController@link');
   Route::post('categories/{category}/unlink/{post}', 'CategoryController@unlink');
